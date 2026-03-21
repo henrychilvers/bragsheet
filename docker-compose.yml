@@ -1,0 +1,24 @@
+services:
+  backend:
+    container_name: bragsheet-backend
+    build: ./backend
+    ports:
+      - "5001:5000"
+    volumes:
+      - db-data:/app/data
+    environment:
+      - FLASK_ENV=development
+
+  frontend:
+    container_name: bragsheet-frontend
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
+volumes:
+  db-data:
+    name: bragsheet-db-data
