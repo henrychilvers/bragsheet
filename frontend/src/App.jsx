@@ -3,6 +3,27 @@ import './App.css';
 
 const API_URL = 'http://localhost:5001/api';
 
+const getWeekNumber = (date) => {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+};
+
+const timeAgo = (timestamp) => {
+  const seconds = Math.floor((new Date() - new Date(timestamp + 'Z')) / 1000);
+  if (seconds < 60) return 'now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months}mo ago`;
+  return `${Math.floor(months / 12)}y ago`;
+};
+
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 function getQuarterLabels(startMonth) {
@@ -307,6 +328,7 @@ function App() {
       body += `${index + 1}. ${acc.title}`;
       if (acc.objective) body += ` (${acc.objective})`;
       body += '\n';
+      if (acc.description) body += `   ${acc.description}\n`;
     });
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
@@ -415,6 +437,7 @@ function App() {
               </div>
               {acc.objective && <div className="objective-tag" data-objective={acc.objective}>{acc.objective}</div>}
               {acc.description && <p>{acc.description}</p>}
+              {acc.created_at && <div className="card-timestamp">{timeAgo(acc.created_at)} · week {getWeekNumber(new Date(acc.created_at + 'Z'))}</div>}
             </div>
           ))
         )}

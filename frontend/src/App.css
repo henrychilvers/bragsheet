@@ -276,6 +276,12 @@ form button:hover {
   white-space: nowrap;
 }
 
+.card-timestamp {
+  font-size: 11px;
+  color: #95a5a6;
+  margin-top: 8px;
+}
+
 .accomplishment-card p {
   color: #555;
   line-height: 1.6;
